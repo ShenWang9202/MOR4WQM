@@ -1,0 +1,19 @@
+function ReducedsystemMatrix = BalancedTrucation2(sys,goal,r)
+[sysb,Gramians,T,Ti] = balreal(sys);
+% decide the best reduced order r according to the energy
+fullModeNum = size(sys.A,1);
+if(r == -1)
+    r = ObtainModeR(fullModeNum,goal,Gramians);
+end
+% eliminate the HankelSigularValues that is not important
+elim = (Gramians<Gramians(r));
+sysr = modred(sysb,elim);
+
+ReducedsystemMatrix = struct('Ar',sysr.A,...
+    'Br',sysr.B,...
+    'Cr',sysr.C,...
+    'Dr',sysr.D,...
+    'nr',r,...
+    'T',Ti(:,1:r),...
+    'S',T(1:r,:));
+end
